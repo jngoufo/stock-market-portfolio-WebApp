@@ -1,0 +1,17 @@
+# Fichiers de configuration et secrets
+.env
+config.ini
+
+# Données brutes et sensibles
+source/
+*.csv
+
+# Fichiers de log
+*.txt
+
+# Fichiers générés par Python
+__pycache__/
+*.pyc
+
+# Environnement virtuel (s'il est dans le dossier)
+analyste-env/

@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-T">
+    <title>Mon Portefeuille</title>
+    <style>
+        body { font-family: sans-serif; margin: 2em; background-color: #f9f9f9; }
+        h1 { color: #333; }
+        ul { list-style-type: none; padding: 0; }
+        li { background: #fff; margin: 5px 0; padding: 12px; border-radius: 5px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+    </style>
+</head>
+<body>
+    <style>
+        .demo-banner {
+            background-color: #eef6ff;
+            border-left: 5px solid #007BFF;
+            padding: 15px 20px;
+            margin: 20px auto;
+            max-width: 900px;
+            border-radius: 5px;
+        }
+        .demo-banner p {
+            margin: 0.5em 0;
+        }
+        .demo-banner a {
+            font-weight: bold;
+            color: #0056b3;
+        }
+    </style>
+
+    <div class="demo-banner">
+        <h3>Bienvenue sur la version de démonstration de mon portefeuille !</h3>
+        <p>Vous naviguez actuellement sur une vitrine publique utilisant des données factices de mon portefeuille d'investissement en bourse. Toutes les fonctionnalités, des graphiques à l'analyse de performance, sont pleinement opérationnelles.</p>
+        <p>
+            L'application complète, personnelle et sécurisée, est connectée à un flux de données réel et inclut un système d'authentification.
+            <strong>Intéressé(e) à voir le moteur d'analyse financière complet en action ?</strong>
+            <a href="mailto:justin@monwebmestre.tech?subject=Demande d'accès - App Portfolio">Demandez un accès personnel.</a>
+         </p>
+            <hr style="border: none; border-top: 1px solid #cce0ff; margin: 15px 0;"> <p style="text-align: right; font-style: italic;"> Justin
+        </p>
+        </p>
+    </div>
+    <div style="text-align: right; padding: 10px;">
+        Connecté en tant que <strong>{{ current_user.username }}</strong> | <a href="{{ url_for('logout') }}">Se déconnecter</a>
+    </div>
+    <div style="text-align:center; margin-bottom: 2em;">
+        <a href="{{ url_for('dashboard') }}" style="font-size: 1.2em; font-weight: bold; background-color: #007BFF; color: white; padding: 10px 15px; border-radius: 5px;">
+            &#x1F4CA; Voir le Dashboard Global
+        </a>
+    </div>
+    <h1>Titres de mon portefeuille</h1>
+
+    <ul>
+        {% for titre in titres %}
+<li>{{ titre.nom_entreprise }} ({{ titre.ticker }})</li>
+
+<li><a href="{{ url_for('demo_titre_detail', ticker=titre.ticker) }}">{{ titre.nom_entreprise }} ({{ titre.ticker }})</a></li>        {% else %}
+            <li>Aucun titre trouvé dans le portefeuille.</li>
+        {% endfor %}
+    </ul>
+</body>
+</html>

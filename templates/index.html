@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Mon Portefeuille</title>
+    <style>
+        body { font-family: system-ui, sans-serif; margin: 0; padding: 0; background-color: #f9f9f9; }
+        .container { max-width: 900px; margin: auto; padding: 2em; }
+        h1 { color: #333; }
+        ul { list-style-type: none; padding: 0; }
+        li { background: #fff; margin: 5px 0; padding: 12px; border-radius: 5px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        a { color: #007BFF; text-decoration: none; }
+        a:hover { text-decoration: underline; }
+        .logout-bar { text-align: right; padding: 10px; background-color: #e9ecef; }
+        .dashboard-link { text-align:center; margin: 2em 0; }
+        .dashboard-link a { font-size: 1.2em; font-weight: bold; background-color: #007BFF; color: white; padding: 10px 15px; border-radius: 5px; }
+    </style>
+</head>
+<body>
+    <div class="logout-bar">
+        Connecté en tant que <strong>{{ current_user.username }}</strong> | <a href="{{ url_for('logout') }}">Se déconnecter</a>
+    </div>
+    <div class="container">
+        <div class="dashboard-link">
+            <a href="{{ url_for('dashboard') }}">&#x1F4CA; Voir le Dashboard Global</a>
+        </div>
+        <h1>Titres de mon portefeuille</h1>
+        <ul>
+            {% for titre in titres %}
+                <li><a href="{{ url_for('titre_detail', titre_id=titre.id) }}">{{ titre.nom_entreprise }} ({{ titre.ticker }})</a></li>
+            {% else %}
+                <li>Aucun titre trouvé dans le portefeuille.</li>
+            {% endfor %}
+        </ul>
+    </div>
+</body>
+</html>

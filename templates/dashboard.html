@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard du Portefeuille</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body { font-family: system-ui, sans-serif; margin: 0; padding: 0; background-color: #f9f9f9; }
+        .container { max-width: 900px; margin: auto; padding: 2em; }
+        h1, h2 { text-align: center; color: #333; }
+        a { color: #007BFF; text-decoration: none; }
+        a:hover { text-decoration: underline; }
+        .logout-bar { text-align: right; padding: 10px; background-color: #e9ecef; }
+
+        .analyse-box { background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); text-align: center; margin-bottom: 2em;}
+        .stat-label { font-size: 1em; color: #6c757d; }
+        .stat-value { font-weight: bold; font-size: 1.8em; }
+
+        .analyse-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin: 2em 0; }
+        .performer-box { background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        .performer-box h3 { text-align: center; margin-top: 0; }
+        .performer-list { list-style-type: none; padding: 0; }
+        .performer-list li { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #eee; }
+        .performer-list li:last-child { border-bottom: none; }
+        .performer-name { font-weight: bold; }
+        .positive { color: #28a745; }
+        .negative { color: #dc3545; }
+    </style>
+</head>
+<body>
+    <div class="logout-bar">
+        Connecté en tant que <strong>{{ current_user.username }}</strong> | <a href="{{ url_for('logout') }}">Se déconnecter</a>
+    </div>
+    <div class="container">
+        <p><a href="{{ url_for('index') }}">&larr; Retour à la liste des titres</a></p>
+        <h1>Dashboard du Portefeuille</h1>
+
+        {% if performance %}
+        <div class="analyse-box">
+            <p class="stat-label">Valeur Totale Actuelle (en {{ performance.devise }})</p>
+            <p class="stat-value">${{ "%.2f"|format(performance.valeur_actuelle) }}</p>
+            <p>
+                Variation sur la période :
+                <span class="{% if performance.absolue > 0 %}positive{% else %}negative{% endif %}">
+                    ${{ "%.2f"|format(performance.absolue) }} {{ performance.devise }} ({{ "%.2f"|format(performance.pourcentage) }}%)
+                </span>
+            </p>
+        </div>
+        {% endif %}
+
+        <div class="analyse-grid">
+            <div class="performer-box">
+                <h3 class="positive">🚀 Top 10 Performeurs de la semaine</h3>
+                <ul class="performer-list">
+                    {% for p in meilleurs_performeurs %}
+                        <li>
+                            <span class="performer-name">{{ p.ticker }}</span>
+                            <span class="positive">+{{ "%.2f"|format(p.performance_pct) }}%</span>
+                        </li>
+                    {% else %}
+                        <li>Pas assez de données.</li>
+                    {% endfor %}
+                </ul>
+            </div>
+            <div class="performer-box">
+                <h3 class="negative">📉 Flop 10 Performeurs de la semaine</h3>
+                <ul class="performer-list">
+                    {% for p in pires_performeurs %}
+                        <li>
+                            <span class="performer-name">{{ p.ticker }}</span>
+                            <span class="negative">{{ "%.2f"|format(p.performance_pct) }}%</span>
+                        </li>
+                    {% else %}
+                        <li>Pas assez de données.</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+
+        <h2>Évolution globale du portefeuille</h2>
+        <div class="chart-container">
+            <canvas id="performanceChart"></canvas>
+        </div>
+    </div>
+
+    <script>
+        const ctx = document.getElementById('performanceChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: {{ labels|tojson }},
+                datasets: [{
+                    label: 'Valeur Totale du Portefeuille (CAD)',
+                    data: {{ valeurs|tojson }},
+                    borderColor: '#007BFF',
+                    tension: 0.1,
+                    fill: true,
+                    backgroundColor: 'rgba(0, 123, 255, 0.1)'
+                }]
+            },
+            options: { scales: { y: { beginAtZero: false } } }
+        });
+    </script>
+</body>
+</html>

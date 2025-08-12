@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ titre.nom_entreprise }}</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body { font-family: system-ui, sans-serif; margin: 0; padding: 0; background-color: #f9f9f9; }
+        .container { max-width: 900px; margin: auto; padding: 2em; }
+        h1, h2 { text-align: center; color: #333; }
+        a { color: #007BFF; text-decoration: none; }
+        a:hover { text-decoration: underline; }
+        .logout-bar { text-align: right; padding: 10px; background-color: #e9ecef; }
+        .analyse-box { background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); margin: 2em 0; }
+        .stat { font-size: 1.2em; }
+        .stat-value { font-weight: bold; }
+        .positive { color: #28a745; }
+        .negative { color: #dc3545; }
+        table { width: 100%; border-collapse: collapse; margin-top: 1em; background: #fff; box-shadow: 0 4px 6px rgba(0,0,0,0.1); border-radius: 8px; overflow: hidden; }
+        th, td { padding: 12px 15px; text-align: left; border-bottom: 1px solid #ddd; }
+        th { background-color: #f2f2f2; }
+        tbody tr:last-child td { border-bottom: none; }
+    </style>
+</head>
+<body>
+    {% if current_user.is_authenticated %}
+        <div class="logout-bar">
+            Connecté en tant que <strong>{{ current_user.username }}</strong> | <a href="{{ url_for('logout') }}">Se déconnecter</a>
+        </div>
+    {% endif %}
+
+    <div class="container">
+        <p>
+            {% if 'demo' in request.endpoint %}
+                <a href="{{ url_for('demo_index') }}">&larr; Retour à la liste de démo</a>
+            {% else %}
+                <a href="{{ url_for('index') }}">&larr; Retour à la liste</a>
+            {% endif %}
+        </p>
+        
+        <h1>{{ titre.nom_entreprise }} ({{ titre.ticker }})</h1>
+
+        {% if performance %}
+        <div class="analyse-box">
+            <h2>Analyse de la semaine</h2>
+            <p class="stat">
+                Variation : 
+                <span class="stat-value {% if performance.absolue > 0 %}positive{% else %}negative{% endif %}">
+                    ${{ "%.2f"|format(performance.absolue) }} ({{ "%.2f"|format(performance.pourcentage) }}%)
+                </span>
+            </p>
+        </div>
+        {% endif %}
+
+        <div class="chart-container">
+            <canvas id="performanceChart"></canvas>
+        </div>
+
+        <h2>Historique des relevés</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Date du relevé</th>
+                    <th>Valeur</th>
+                    <th>Quantité</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% if titre.historique %}
+                    {% for h in titre.historique|sort(attribute='date_releve', reverse=true) %}
+                    <tr>
+                        <td>{{ h.date_releve.strftime('%d %B %Y') }}</td>
+                        <td>${{ "%.2f"|format(h.valeur) }} {{ h.devise }}</td>
+                        <td>{{ h.quantite }}</td>
+                    </tr>
+                    {% endfor %}
+                {% else %}
+                    <tr>
+                        <td colspan="3">Aucun historique disponible pour ce titre.</td>
+                    </tr>
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        const ctx = document.getElementById('performanceChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: {{ labels|tojson }},
+                datasets: [{
+                    label: 'Valeur du titre ($)',
+                    data: {{ valeurs|tojson }},
+                    borderColor: 'rgb(75, 192, 192)',
+                    tension: 0.1,
+                    fill: true,
+                    backgroundColor: 'rgba(75, 192, 192, 0.1)'
+                }]
+            },
+            options: { scales: { y: { beginAtZero: false } } }
+        });
+    </script>
+</body>
+</html>
