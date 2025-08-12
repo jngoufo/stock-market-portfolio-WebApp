@@ -1,3 +1,4 @@
+(English version will follow)
 # Application d'Analyse de Portefeuille
 
 Une application web full-stack développée avec Flask et Python à l'aide de l'IA pour suivre et analyser la performance de mon portefeuille d'investissement.
@@ -17,3 +18,25 @@ Une application web full-stack développée avec Flask et Python à l'aide de l'
 * **Frontend** : HTML, CSS, JavaScript, Chart.js
 * **Base de données** : MySQL
 * **Déploiement** : PythonAnywhere
+
+*****************************************************************************************************************************************************
+
+# Portfolio Analysis Application
+
+A full-stack web application developed with Flask and Python using AI to track and analyze the performance of my investment portfolio.
+
+## Features
+
+* **Secure Authentication System**: Private access with encrypted passwords.
+* **Global Dashboard**: Overview of portfolio value, with performance analysis and currency conversion (USD/CAD).
+* **Detailed Analysis by Security**: Interactive charts (Chart.js) and performance calculations for each stock.
+* **Top/Flop 10**: Automatic identification of the 10 best and worst performers.
+* **Automated Data Pipeline**: A Python script manages data cleaning, transformation, and loading into the MySQL database.
+* **Public Demo Version**: A secure showcase using mock data to demonstrate the application's features.
+
+## Technologies Used
+
+* **Backend**: Python, Flask, SQLAlchemy, Flask-Login
+* **Frontend**: HTML, CSS, JavaScript, Chart.js
+* **Database**: MySQL
+* **Deployment**: PythonAnywhere
