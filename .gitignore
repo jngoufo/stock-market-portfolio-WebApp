@@ -7,7 +7,7 @@ source/
 *.csv
 
 # Fichiers de log
-*.txt
+log_*.txt
 
 # Fichiers générés par Python
 __pycache__/

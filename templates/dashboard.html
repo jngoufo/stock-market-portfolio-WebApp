@@ -40,7 +40,7 @@
             <p class="stat-label">Valeur Totale Actuelle (en {{ performance.devise }})</p>
             <p class="stat-value">${{ "%.2f"|format(performance.valeur_actuelle) }}</p>
             <p>
-                Variation sur la période :
+                Variation aujourd'hui :
                 <span class="{% if performance.absolue > 0 %}positive{% else %}negative{% endif %}">
                     ${{ "%.2f"|format(performance.absolue) }} {{ performance.devise }} ({{ "%.2f"|format(performance.pourcentage) }}%)
                 </span>
@@ -50,7 +50,7 @@
 
         <div class="analyse-grid">
             <div class="performer-box">
-                <h3 class="positive">🚀 Top 10 Performeurs de la semaine</h3>
+                <h3 class="positive">🚀 Top 10 Performeurs du jour</h3>
                 <ul class="performer-list">
                     {% for p in meilleurs_performeurs %}
                         <li>
@@ -63,7 +63,7 @@
                 </ul>
             </div>
             <div class="performer-box">
-                <h3 class="negative">📉 Flop 10 Performeurs de la semaine</h3>
+                <h3 class="negative">📉 Flop 10 Performeurs du jour</h3>
                 <ul class="performer-list">
                     {% for p in pires_performeurs %}
                         <li>
@@ -72,6 +72,32 @@
                         </li>
                     {% else %}
                         <li>Pas assez de données.</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+<!--V2.0 grille d'analyse 52 semaines-->
+        <h2>Analyse sur 52 semaines</h2>
+        <div class="analyse-grid">
+            <div class="performer-box">
+                <h3 class="positive">📈 Proches du Plus Haut <br><small>(valeur actuelle / valeur plus haute)</small></h3>
+                <ul class="performer-list">
+                    {% for p in top_10_haut %}
+                        <li>
+                            <span class="performer-name">{{ p.ticker }}</span>
+                            <span>${{ "%.2f"|format(p.prix_actuel) }} / <span class="positive">${{ "%.2f"|format(p.an_haut) }}</span></span>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+            <div class="performer-box">
+                <h3 class="negative">📉 Proches du Plus Bas <br><small>(valeur actuelle / valeur plus haute)</small></h3>
+                <ul class="performer-list">
+                    {% for p in top_10_bas %}
+                        <li>
+                            <span class="performer-name">{{ p.ticker }}</span>
+                            <span>${{ "%.2f"|format(p.prix_actuel) }} / <span class="negative">${{ "%.2f"|format(p.an_bas) }}</span></span>
+                        </li>
                     {% endfor %}
                 </ul>
             </div>

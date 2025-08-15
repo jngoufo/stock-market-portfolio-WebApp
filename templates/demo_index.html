@@ -5,30 +5,29 @@
     <title>Mon Portefeuille</title>
     <style>
         body { font-family: sans-serif; margin: 2em; background-color: #f9f9f9; }
-        h1 { color: #333; }
+        .container { max-width: 900px; margin: auto; }
+        h1, h2 { color: #333; text-align: center; }
         ul { list-style-type: none; padding: 0; }
         li { background: #fff; margin: 5px 0; padding: 12px; border-radius: 5px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        a { color: #007BFF; text-decoration: none; }
+
+        .demo-banner { background-color: #eef6ff; border-left: 5px solid #007BFF; padding: 15px 20px; margin: 20px auto; max-width: 900px; border-radius: 5px; }
+        .demo-banner p { margin: 0.5em 0; }
+        .demo-banner a { font-weight: bold; color: #0056b3; }
+        
+        .analyse-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin: 2em 0; }
+        .performer-box { background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        .performer-box h3 { text-align: center; margin-top: 0; }
+        .performer-list { list-style-type: none; padding: 0; }
+        .performer-list li { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #eee; font-size: 0.9em; background: none; box-shadow: none; margin: 0; border-radius: 0;}
+        .performer-list li:last-child { border-bottom: none; }
+        .performer-name { font-weight: bold; }
+        .positive { color: #28a745; }
+        .negative { color: #dc3545; }
     </style>
 </head>
 <body>
-    <style>
-        .demo-banner {
-            background-color: #eef6ff;
-            border-left: 5px solid #007BFF;
-            padding: 15px 20px;
-            margin: 20px auto;
-            max-width: 900px;
-            border-radius: 5px;
-        }
-        .demo-banner p {
-            margin: 0.5em 0;
-        }
-        .demo-banner a {
-            font-weight: bold;
-            color: #0056b3;
-        }
-    </style>
-
+<div class="container">
     <div class="demo-banner">
         <h3>Bienvenue sur la version de démonstration de mon portefeuille !</h3>
         <p>Vous naviguez actuellement sur une vitrine publique utilisant des données factices de mon portefeuille d'investissement en bourse. Toutes les fonctionnalités, des graphiques à l'analyse de performance, sont pleinement opérationnelles.</p>
@@ -36,28 +35,73 @@
             L'application complète, personnelle et sécurisée, est connectée à un flux de données réel et inclut un système d'authentification.
             <strong>Intéressé(e) à voir le moteur d'analyse financière complet en action ?</strong>
             <a href="mailto:justin@monwebmestre.tech?subject=Demande d'accès - App Portfolio">Demandez un accès personnel.</a>
-         </p>
-            <hr style="border: none; border-top: 1px solid #cce0ff; margin: 15px 0;"> <p style="text-align: right; font-style: italic;"> Justin
         </p>
-        </p>
+        <hr style="border: none; border-top: 1px solid #cce0ff; margin: 15px 0;">
+        <p style="text-align: right; font-style: italic;">Justin</p>
     </div>
-    <div style="text-align: right; padding: 10px;">
-        Connecté en tant que <strong>{{ current_user.username }}</strong> | <a href="{{ url_for('logout') }}">Se déconnecter</a>
-    </div>
-    <div style="text-align:center; margin-bottom: 2em;">
-        <a href="{{ url_for('dashboard') }}" style="font-size: 1.2em; font-weight: bold; background-color: #007BFF; color: white; padding: 10px 15px; border-radius: 5px;">
-            &#x1F4CA; Voir le Dashboard Global
-        </a>
-    </div>
-    <h1>Titres de mon portefeuille</h1>
+    
+    <h1>Analyse du Portefeuille de Démonstration</h1>
 
+    <h2>Performance de la semaine</h2>
+    <div class="analyse-grid">
+        <div class="performer-box">
+            <h3 class="positive">🚀 Top 10 Performeurs</h3>
+            <ul class="performer-list">
+                {% for p in meilleurs_performeurs_semaine %}
+                    <li>
+                        <span class="performer-name">{{ p.ticker }}</span>
+                        <span class="positive">+{{ "%.2f"|format(p.performance_pct) }}%</span>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+        <div class="performer-box">
+            <h3 class="negative">📉 Flop 10 Performeurs</h3>
+            <ul class="performer-list">
+                {% for p in pires_performeurs_semaine %}
+                    <li>
+                        <span class="performer-name">{{ p.ticker }}</span>
+                        <span class="negative">{{ "%.2f"|format(p.performance_pct) }}%</span>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+
+    <h2>Analyse sur 52 semaines</h2>
+    <div class="analyse-grid">
+        <div class="performer-box">
+            <h3 class="positive">📈 Proches du Plus Haut</h3>
+            <ul class="performer-list">
+                {% for p in top_10_haut %}
+                    <li>
+                        <span class="performer-name">{{ p.ticker }}</span>
+                        <span>${{ "%.2f"|format(p.prix_actuel) }} / <span class="positive">${{ "%.2f"|format(p.an_haut) }}</span></span>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+        <div class="performer-box">
+            <h3 class="negative">📉 Proches du Plus Bas</h3>
+            <ul class="performer-list">
+                {% for p in top_10_bas %}
+                    <li>
+                        <span class="performer-name">{{ p.ticker }}</span>
+                        <span>${{ "%.2f"|format(p.prix_actuel) }} / <span class="negative">${{ "%.2f"|format(p.an_bas) }}</span></span>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+
+    <h2>Liste Complète des Titres</h2>
     <ul>
         {% for titre in titres %}
-<li>{{ titre.nom_entreprise }} ({{ titre.ticker }})</li>
-
-<li><a href="{{ url_for('demo_titre_detail', ticker=titre.ticker) }}">{{ titre.nom_entreprise }} ({{ titre.ticker }})</a></li>        {% else %}
+            <li><a href="{{ url_for('demo_titre_detail', ticker=titre.ticker) }}">{{ titre.nom_entreprise }} ({{ titre.ticker }})</a></li>
+        {% else %}
             <li>Aucun titre trouvé dans le portefeuille.</li>
         {% endfor %}
     </ul>
+</div>
 </body>
 </html>

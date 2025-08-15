@@ -37,14 +37,14 @@
                 <a href="{{ url_for('index') }}">&larr; Retour à la liste</a>
             {% endif %}
         </p>
-        
+
         <h1>{{ titre.nom_entreprise }} ({{ titre.ticker }})</h1>
 
         {% if performance %}
         <div class="analyse-box">
-            <h2>Analyse de la semaine</h2>
+            <h2>Analyse de la journée</h2>
             <p class="stat">
-                Variation : 
+                Variation aujourd'hui :
                 <span class="stat-value {% if performance.absolue > 0 %}positive{% else %}negative{% endif %}">
                     ${{ "%.2f"|format(performance.absolue) }} ({{ "%.2f"|format(performance.pourcentage) }}%)
                 </span>
@@ -55,7 +55,19 @@
         <div class="chart-container">
             <canvas id="performanceChart"></canvas>
         </div>
-
+        {% if titre.an_haut is defined %}
+        <h2>Données Techniques (52 Semaines)</h2>
+        <div class="data-grid">
+            <div class="data-item">
+                <span class="data-label">Plus haut (52 sem.)</span>
+                <span class="data-value">{% if titre.an_haut %}${{ "%.2f"|format(titre.an_haut) }}{% else %}N/A{% endif %}</span>
+            </div>
+            <div class="data-item">
+                <span class="data-label">Plus bas (52 sem.)</span>
+                <span class="data-value">{% if titre.an_bas %}${{ "%.2f"|format(titre.an_bas) }}{% else %}N/A{% endif %}</span>
+            </div>
+        </div>
+        {% endif %}
         <h2>Historique des relevés</h2>
         <table>
             <thead>
